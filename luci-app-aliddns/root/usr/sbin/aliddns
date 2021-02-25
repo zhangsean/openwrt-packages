@@ -16,15 +16,12 @@ uci_bool_by_name() {
 }
 
 intelnetip() {
-	tmp_ip=`curl -sL --connect-timeout 3   ns1.dnspod.net:6666`
+	tmp_ip=`curl -sL members.3322.org/dyndns/getip`
 	if [ "Z$tmp_ip" == "Z" ]; then
-		tmp_ip=`curl -sL --connect-timeout 3 members.3322.org/dyndns/getip`
+		tmp_ip=`curl -sL httpbin.org/ip | sed -n '/origin/s/.*:.\"\(.*\)\"/\1/p'`
 	fi
 	if [ "Z$tmp_ip" == "Z" ]; then
-		tmp_ip=`curl -sL --connect-timeout 3 14.215.150.17:6666`
-	fi
-	if [ "Z$tmp_ip" == "Z" ]; then
-		tmp_ip=`curl -sL --connect-timeout 3 whatismyip.akamai.com`
+		tmp_ip=`curl -sL whatismyip.akamai.com`
 	fi
 	echo -n $tmp_ip
 }
