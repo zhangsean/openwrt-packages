@@ -1,5 +1,7 @@
 ﻿#### 说明
 
+* 基于bypass在编译过程中的兼容性、出错率，所以取消bypass
+
 * 软件不定期同步大神库更新，适合一键下载到package目录下，用于openwrt编译
 
 
@@ -34,8 +36,8 @@
  ```
  
 - openwrt 固件编译自定义主题与软件
-- luci-app-bypass             ------------------bypass软件
-- luci-app-dnsfilter             ------------------基于DNS的广告过滤
+- luci-app-vssr            ------------------vssr老竭力
+- luci-app-dnsfilter       ------------------基于DNS的广告过滤
 - luci-app-openclash       ------------------openclash图形         
 - luci-app-advancedsetting ------------------系统高级设置
 - luci-theme-ifit          ------------------透明主题（适配18.06修复主机名错误）
@@ -51,13 +53,6 @@
 - luci-theme-opentomcat    ------------------修复主机名错误（适配18.06）  
 - luci-theme-opentomato    ------------------修复主机名错误（适配18.06）
 #### 注意
-
-*lean等源码编译bypass前请先执行
-
-```
-find package/*/ feeds/*/ -maxdepth 2 -path "*luci-app-bypass/Makefile" | xargs -i sed -i 's/shadowsocksr-libev-ssr-redir/shadowsocksr-libev-alt/g' {}
-find package/*/ feeds/*/ -maxdepth 2 -path "*luci-app-bypass/Makefile" | xargs -i sed -i 's/shadowsocksr-libev-ssr-server/shadowsocksr-libev-server/g' {}
-```
 
 * Lean大近期修改源码后，主题适配！
 
