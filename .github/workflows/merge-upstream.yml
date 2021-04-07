@@ -42,9 +42,10 @@ jobs:
 
     - name: Load upstream commits
       run: |
-        sudo apt-get install -y jq
-        env
-        export UPSTREAM_REPO=`curl -sS https://api.github.com/repos/$GITHUB_REPOSITORY | jq -r .parent.url`
+        export API_URL=$GITHUB_API_URL/repos/$GITHUB_REPOSITORY
+        echo API_URL=$API_URL
+        export UPSTREAM_REPO=`curl -sS $API_URL | jq -r .parent.url`
+        echo $UPSTREAM_REPO
         git pull $UPSTREAM_REPO --log --no-commit
 
     - name: Apply commit changes
