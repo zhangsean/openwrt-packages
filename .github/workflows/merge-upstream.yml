@@ -1,0 +1,60 @@
+#
+# This is free software, lisence use MIT.
+#
+# Copyright (C) 2020 KFERMercer <KFER.Mercer@gmail.com>
+# Copyright (C) 2021 zhangsean <zxf2342@qq.com>
+#
+# <https://github.com/KFERMercer/OpenWrt-CI>
+#
+
+name: Merge-upstream
+
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: 50 23 * * *
+  watch:
+    types: [started]
+  release:
+    types: [published]
+
+jobs:
+
+  merge:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        ref: master
+        fetch-depth: 0
+        lfs: true
+
+    - name: Set git identity
+      run : |
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git config --global user.name "github-actions[bot]"
+
+    - name: Load upstream commits
+      run: |
+        sudo apt-get install -y jq
+        export UPSTREAM_REPO=`curl -sS $GITHUB_REPOSITORY | jq -r .parent.url`
+        git pull $UPSTREAM_REPO --log --no-commit
+
+    - name: Apply commit changes
+      run: |
+        if [ -f ./.git/MERGE_MSG ]; then
+          mkdir /tmp
+          cp ./.git/MERGE_MSG /tmp/message
+          sed -i "1c [bot] Auto merging from upstream" /tmp/message
+          sed -i '/^\#.*/d' /tmp/message
+          git commit --file=/tmp/message
+          git push
+        else
+          echo "There is no merge commits."
+        fi
