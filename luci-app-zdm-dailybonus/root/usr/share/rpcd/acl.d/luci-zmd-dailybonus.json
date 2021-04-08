@@ -1,0 +1,11 @@
+{
+    "luci-zdm-dailybonus": {
+        "description": "ZuiDaiMa dailybonus script for Luci",
+        "read": {
+            "uci": [ "zdm-dailybonus" ]
+        },
+        "write": {
+            "uci": [ "zdm-dailybonus" ]
+        }
+    }
+}

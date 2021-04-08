@@ -1,0 +1,11 @@
+#!/bin/sh
+
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@zdm-dailybonus[-1]
+	add ucitrack zdm-dailybonus
+	set ucitrack.@zdm-dailybonus[-1].init=zdm-dailybonus
+	commit ucitrack
+EOF
+
+rm -f /tmp/luci-indexcache
+exit 0

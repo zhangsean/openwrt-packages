@@ -1,0 +1,13 @@
+config global
+	option version '1.96'
+	option out '0'
+	option stop '100'
+	option dd_token '1fdee6b09c9e037bb6bba8f7d70cfb4c7def1a3495685da6151a1cc3182c9de2'
+	option sign_text '签到嘿嘿嘿'
+	option serverchan ''
+	option serverurl 'scu'
+	option auto_run '1'
+	option auto_run_time '0'
+	option auto_run_time_m '1'
+	option auto_run_time_h '1'
+	list Cookies '双击扫码添加 Cookie'
