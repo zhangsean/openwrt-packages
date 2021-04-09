@@ -11,8 +11,8 @@ end
 
 local data = {
     Cookies = {},
-    JD_DailyBonusDelay = uci:get('zdm-dailybonus', '@global[0]', 'stop'),
-    JD_DailyBonusTimeOut = uci:get('zdm-dailybonus', '@global[0]', 'out')
+    DailyBonusDelay = uci:get('zdm-dailybonus', '@global[0]', 'stop'),
+    DailyBonusTimeOut = uci:get('zdm-dailybonus', '@global[0]', 'out')
 }
 
 for i, v in pairs( uci:get('zdm-dailybonus', '@global[0]', 'Cookies') or {} ) do

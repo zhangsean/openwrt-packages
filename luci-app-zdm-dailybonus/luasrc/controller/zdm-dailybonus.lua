@@ -17,7 +17,7 @@ end
 
 -- 执行程序
 function run()
-    local running = luci.sys.call("busybox ps -w | grep JD_DailyBonus.js | grep -v grep >/dev/null") == 0
+    local running = luci.sys.call("busybox ps -w | grep zdm-dailybonus | grep -v grep >/dev/null") == 0
     if not running then
         luci.sys.call('sh /usr/share/zdm-dailybonus/app.sh -r')
     end
@@ -25,36 +25,16 @@ function run()
 end
 
 local User_Agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36'
-local Host='Host: plogin.m.jd.com'
-local Accept='Accept: application/json, text/plain, */*'
-local Accept_Language='Accept-Language: zh-cn'
-local cookie='/tmp/jd_cookie'
-
-function get_timestamp()
-    return os.time()*1000
-end
-
-function get_s_token()
-    luci.sys.exec('rm -f ' .. cookie)
-    local timestamp = get_timestamp()
-    local url =
-        'https://plogin.m.jd.com/cgi-bin/mm/new_login_entrance?lang=chs&appid=300&returnurl=https://wq.jd.com/passport/LoginRedirect?state=' ..
-        timestamp .. '&returnurl=https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&/myJd/home.action&source=wq_passport'
-    local referer =
-        'https://plogin.m.jd.com/login/login?appid=300&returnurl=https://wq.jd.com/passport/LoginRedirect?state=' ..
-        timestamp .. '&returnurl=https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&/myJd/home.action&source=wq_passport'
-    local s_token = luci.sys.exec("echo -n $(wget-ssl --header='"..Accept.."' --header='"..Accept_Language.."' --header='"..Host.."' --referer='"..referer.."' --user-agent='"..User_Agent.."' --save-cookies="..cookie.." --keep-session-cookies -q -O - '"..url.."' | sed s/[[:space:]]//g | grep -oE '\"s_token\":\"(.+?)\"' | awk -F \\\" '{print $4}')")
-    return s_token
-end
+local Accept='Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
+local Accept_Language='Accept-Language: zh-CN,zh;q=0.9'
+local cookie='/tmp/zdm_cookie'
 
 --获取二维码
 function qrcode()
-    local timestamp = get_timestamp()
-    local s_token = get_s_token()
-    local url = 'https://plogin.m.jd.com/cgi-bin/m/tmauthreflogurl?s_token='..s_token..'&v='..timestamp..'&remember=true'
-    local referer = 'https://plogin.m.jd.com/login/login?appid=300&returnurl=https://wq.jd.com/passport/LoginRedirect?state=' .. timestamp .. '&returnurl=https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&/myJd/home.action&source=wq_passport'
-    local response = luci.sys.exec("echo -n $(wget-ssl --header='"..Accept.."' --header='"..Accept_Language.."' --header='"..Host.."' --referer='"..referer.."' --user-agent='"..User_Agent.."' --load-cookies="..cookie.." --save-cookies="..cookie.." --keep-session-cookies -q -O - '"..url.."')")
-    local token = luci.sys.exec("echo -n $(echo \'"..response.."\' | grep -oE '\"token\":\"(.+?)\"' | awk -F \\\" '{print $4}')")
+    local url = 'http://www.zuidaima.com/user/weixin/login.htm'
+    local referer = 'http://www.zuidaima.com/'
+    local response = luci.sys.exec("echo -n $(wget-ssl --header='"..Accept.."' --header='"..Accept_Language.."' --referer='"..referer.."' --user-agent='"..User_Agent.."' --load-cookies="..cookie.." --save-cookies="..cookie.." --keep-session-cookies -q -O - '"..url.."')")
+    local img = luci.sys.exec("echo -n $(echo \'"..response.."\' | grep -oE '<img src=\"data:(.+?)\"' | awk -F \\\" '{print $4}')")
     local ou_state = luci.sys.exec("echo -n $(echo \'"..response.."\' | grep -oE '\"ou_state\":(\\d+)' | awk -F : '{print $2}')")
     local okl_token = luci.sys.exec("echo -n $(cat "..cookie.." | grep okl_token | awk '{print $7}')")
     local return_json = {
