@@ -1,4 +1,9 @@
 <%+cbi/valueheader%>
+<label class="cbi-value-title"><%= translate("执行") %></label>
+<div class="cbi-value-field">
+    <input class="cbi-button cbi-button-reload" id="update_service" type="button" size="0" onclick="run()" value="<%= translate('手动执行签到') %>" />
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
 <style>
     #mask-box {
@@ -49,6 +54,17 @@
 </style>
 
 <script type="text/javascript">
+    const RUN_URL = '<%=luci.dispatcher.build_url("admin", "services", "zdm-dailybonus","run")%>';
+    const LOG_URL = '<%=luci.dispatcher.build_url("admin", "services", "zdm-dailybonus","log")%>';
+
+    //手动执行
+    function run() {
+        XHR.get(RUN_URL, null, () => {
+            setTimeout(() => { window.location = LOG_URL }, 500);
+        });
+        return false;
+    }
+
 (function( window, document, undefined ) {
     // 选取 DOM 元素
     var selector, section = document.querySelector("[data-prefix$='Cookies']");
@@ -60,7 +76,7 @@
     // 二维码容器
     var code = document.createElement('div');
     code.id = 'code-box';
-    code.innerHTML = "请使用 “微信” 进行扫码认证";
+    code.innerHTML = "请使用绑定了最代码账号的 “微信” 扫码认证";
 
     // 刷新按钮
     var load = document.createElement('a');

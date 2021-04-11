@@ -60,13 +60,13 @@ add_cron() {
 # Run Script
 
 notify() {
-    grep "】:  Cookie失效" ${LOG_FILE} >/dev/null
+    title="$(date '+%Y年%m月%d日') 最代码签到"
+    grep "Cookie失效" ${LOG_FILE} >/dev/null
     if [ $? -eq 0 ]; then
-        title="$(date '+%Y年%m月%d日') 最代码签到 Cookie 失效"
+        desc="Cookie 已失效"
     else
-        title="$(date '+%Y年%m月%d日') 最代码签到"
+        desc=$(cat ${LOG_FILE} | grep -oE '共有(\d+)牛币')
     fi
-    desc=$(cat ${LOG_FILE} | grep -E '签到号|签到概览|签到奖励|其他奖励|账号总计|其他总计' | sed 's/$/&\n/g')
     #serverchan
     sckey=$(uci_get_by_type global serverchan)
     if [ ! -z $sckey ]; then
@@ -81,9 +81,9 @@ notify() {
     #Dingding
     dtoken=$(uci_get_by_type global dd_token)
     if [ ! -z $dtoken ]; then
-    	DTJ_FILE=/tmp/zdm-djson.json
-	echo "{\"msgtype\": \"markdown\",\"markdown\": {\"title\":\"${title}\",\"text\":\"${title} <br/> ${desc}\"}}" > ${DTJ_FILE}
-    	wget-ssl -q --output-document=/dev/null --header="Content-Type: application/json" --post-file=/tmp/zdm-djson.json "https://oapi.dingtalk.com/robot/send?access_token=${dtoken}"
+        DTJ_FILE=/tmp/zdm-djson.json
+        echo "{\"msgtype\": \"markdown\",\"markdown\": {\"title\":\"${title}\",\"text\":\"### ${title}\n ${desc}\"}}" > ${DTJ_FILE}
+        wget-ssl -q --output-document=/dev/null --header="Content-Type: application/json" --post-file=$DTJ_FILE "https://oapi.dingtalk.com/robot/send?access_token=${dtoken}"
     fi
 
     #telegram
@@ -105,7 +105,9 @@ notify() {
 run() {
     echo -e $(date '+%Y-%m-%d %H:%M:%S %A') >$LOG_FILE 2>/dev/null
     COOKIE=$(uci_get_by_type global Cookies)
+    echo "Cookie: $COOKIE" >>$LOG_FILE 2>/dev/null
     SIGN_TEXT=$(uci_get_by_type global sign_text)
+    echo "SIGN_TEXT: $SIGN_TEXT" >>$LOG_FILE 2>/dev/null
     curl -i "$ZDM_CREATE" \
         -H 'Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryuZieHHYBAjr3r4Jc' \
         -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36' \
@@ -113,7 +115,16 @@ run() {
         -H "Cookie: $COOKIE" \
         --data-raw $'------WebKitFormBoundaryuZieHHYBAjr3r4Jc\r\nContent-Disposition: form-data; name="rdm"\r\n\r\n8ozHCudgul\r\n------WebKitFormBoundaryuZieHHYBAjr3r4Jc\r\nContent-Disposition: form-data; name="content"\r\n\r\n签到打卡\r\n------WebKitFormBoundaryuZieHHYBAjr3r4Jc\r\nContent-Disposition: form-data; name="file"; filename=""\r\nContent-Type: application/octet-stream\r\n\r\n\r\n------WebKitFormBoundaryuZieHHYBAjr3r4Jc--\r\n' \
         --insecure >>$LOG_FILE
-    return $?
+    curl -i "$ZDM_HOME" \
+        -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36' \
+        -H "Referer: $ZDM_CREATE" \
+        -H "Cookie: $COOKIE" \
+        --insecure | grep -oE '共有(\d+)牛币' >>$LOG_FILE 2>/dev/null
+    if [ $? -gt 0 ]; then
+        echo "Cookie失效" >>$LOG_FILE 2>/dev/null
+    fi
+    notify &
+    echo "The End" >>$LOG_FILE 2>/dev/null
 }
 
 save() {
