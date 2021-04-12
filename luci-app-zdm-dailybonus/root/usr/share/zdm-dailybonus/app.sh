@@ -65,7 +65,7 @@ notify() {
     if [ $? -eq 0 ]; then
         desc="Cookie 已失效"
     else
-        desc=$(cat ${LOG_FILE} | grep -oE '共有(\d+)牛币')
+        desc=$(cat ${LOG_FILE} | grep -E '签到前|签到后|账号' | sed 's/$/&\n/g')
     fi
     #serverchan
     sckey=$(uci_get_by_type global serverchan)
@@ -82,7 +82,7 @@ notify() {
     dtoken=$(uci_get_by_type global dd_token)
     if [ ! -z $dtoken ]; then
         DTJ_FILE=/tmp/zdm-djson.json
-        echo "{\"msgtype\": \"markdown\",\"markdown\": {\"title\":\"${title}\",\"text\":\"### ${title}\n ${desc}\"}}" > ${DTJ_FILE}
+        echo "{\"msgtype\": \"markdown\",\"markdown\": {\"title\":\"${title}\",\"text\":\"#### ${title}\n ${desc}\"}}" > ${DTJ_FILE}
         wget-ssl -q --output-document=/dev/null --header="Content-Type: application/json" --post-file=$DTJ_FILE "https://oapi.dingtalk.com/robot/send?access_token=${dtoken}"
     fi
 
@@ -103,28 +103,35 @@ notify() {
 }
 
 run() {
-    echo -e $(date '+%Y-%m-%d %H:%M:%S %A') >$LOG_FILE 2>/dev/null
+    echo -e $(date '+%Y-%m-%d %H:%M:%S %A') >$LOG_FILE
     COOKIE=$(uci_get_by_type global Cookies)
-    echo "Cookie: $COOKIE" >>$LOG_FILE 2>/dev/null
+    echo "Cookie: $COOKIE" >>$LOG_FILE
     SIGN_TEXT=$(uci_get_by_type global sign_text)
-    echo "SIGN_TEXT: $SIGN_TEXT" >>$LOG_FILE 2>/dev/null
-    curl -i "$ZDM_CREATE" \
-        -H 'Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryuZieHHYBAjr3r4Jc' \
-        -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36' \
-        -H "Referer: $ZDM_HOME" \
-        -H "Cookie: $COOKIE" \
-        --data-raw $'------WebKitFormBoundaryuZieHHYBAjr3r4Jc\r\nContent-Disposition: form-data; name="rdm"\r\n\r\n8ozHCudgul\r\n------WebKitFormBoundaryuZieHHYBAjr3r4Jc\r\nContent-Disposition: form-data; name="content"\r\n\r\n签到打卡\r\n------WebKitFormBoundaryuZieHHYBAjr3r4Jc\r\nContent-Disposition: form-data; name="file"; filename=""\r\nContent-Type: application/octet-stream\r\n\r\n\r\n------WebKitFormBoundaryuZieHHYBAjr3r4Jc--\r\n' \
-        --insecure >>$LOG_FILE
+    echo "SIGN_TEXT: $SIGN_TEXT" >>$LOG_FILE
+    USER_AGENT='Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36'
     curl -i "$ZDM_HOME" \
-        -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36' \
         -H "Referer: $ZDM_CREATE" \
+        -H "User-Agent: $USER_AGENT" \
         -H "Cookie: $COOKIE" \
-        --insecure | grep -oE '共有(\d+)牛币' >>$LOG_FILE 2>/dev/null
+        --insecure | grep -oE '共有(\d+)牛币' | sed '1s/^/签到前：/' >>$LOG_FILE
     if [ $? -gt 0 ]; then
-        echo "Cookie失效" >>$LOG_FILE 2>/dev/null
+        echo "Cookie失效" >>$LOG_FILE
+    else
+        curl -i "$ZDM_CREATE" \
+            -H "Referer: $ZDM_HOME" \
+            -H "User-Agent: $USER_AGENT" \
+            -H "Cookie: $COOKIE" \
+            -F "rdm=AqGtwSuMcQ" \
+            -F "content=$SIGN_TEXT" \
+            -F file=@/dev/null \
+            --insecure | grep 'HTTP' >>$LOG_FILE
+        curl -i "$ZDM_HOME" \
+            -H "Referer: $ZDM_CREATE" \
+            -H "User-Agent: $USER_AGENT" \
+            -H "Cookie: $COOKIE" \
+            --insecure | grep -oE '共有(\d+)牛币|/user/(\d+).htm\">(\w+)' | head -n2 | sed '1s/^/签到后：/;s/.*>/账号：/' >>$LOG_FILE
     fi
     notify &
-    echo "The End" >>$LOG_FILE 2>/dev/null
 }
 
 save() {
