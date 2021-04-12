@@ -52,7 +52,7 @@ cancel() {
 
 add_cron() {
     sed -i '/zdm-dailybonus/d' $CRON_FILE
-    [ $(uci_get_by_type global auto_run 0) -eq 1 ] && echo $(uci_get_by_type global auto_run_time_m)' '$(uci_get_by_type global auto_run_time_h)' * * * sh /usr/share/zdm-dailybonus/app.sh -w' >>$CRON_FILE
+    [ $(uci_get_by_type global auto_run 0) -eq 1 ] && echo $(uci_get_by_type global auto_run_time_m)' '$(uci_get_by_type global auto_run_time_h)'/'$(uci_get_by_type global auto_run_interval)' * * * sh /usr/share/zdm-dailybonus/app.sh -w' >>$CRON_FILE
     crontab $CRON_FILE
     /etc/init.d/cron restart
 }
@@ -60,7 +60,7 @@ add_cron() {
 # Run Script
 
 notify() {
-    title="$(date '+%Y年%m月%d日') 最代码签到"
+    title="$(date '+%Y-%m-%d %H:%M:%S') 最代码签到"
     grep "Cookie失效" ${LOG_FILE} >/dev/null
     if [ $? -eq 0 ]; then
         desc="Cookie 已失效"
@@ -135,7 +135,6 @@ run() {
 }
 
 save() {
-    lua /usr/share/zdm-dailybonus/gen_cookieset.lua
     add_cron
 }
 
