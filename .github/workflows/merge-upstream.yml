@@ -13,6 +13,8 @@ on:
   push:
     branches:
       - master
+    paths:
+      - .github/workflows/merge-upstream.yml
   schedule:
     - cron: 50 23 * * *
   watch:
