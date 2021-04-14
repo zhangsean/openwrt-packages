@@ -1,8 +1,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-zdm-dailybonus
-PKG_VERSION:=0.0.5
-PKG_RELEASE:=20210412
+PKG_VERSION:=0.1.0
+PKG_RELEASE:=20210414
 
 define Package/$(PKG_NAME)/conffiles
 /etc/config/zdm-dailybonus

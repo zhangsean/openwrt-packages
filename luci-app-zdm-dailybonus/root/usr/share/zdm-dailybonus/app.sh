@@ -113,10 +113,11 @@ run() {
         -H "Referer: $ZDM_CREATE" \
         -H "User-Agent: $USER_AGENT" \
         -H "Cookie: $COOKIE" \
-        --insecure | grep -oE '共有(\d+)牛币' | sed '1s/^/签到前：/' >>$LOG_FILE
+        --insecure | grep -oE '共有(\d+)牛币' >>$LOG_FILE
     if [ $? -gt 0 ]; then
         echo "Cookie失效" >>$LOG_FILE
     else
+        sed -i '/共有/s/^/签到前：/' $LOG_FILE
         curl -i "$ZDM_CREATE" \
             -H "Referer: $ZDM_HOME" \
             -H "User-Agent: $USER_AGENT" \
