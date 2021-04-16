@@ -131,7 +131,7 @@
         qr.clear();
         // 获取通信数据
         XHR.get( '<%=luci.dispatcher.build_url("admin", "services", "zdm-dailybonus","qrcode")%>', null, ( x, d ) => {
-            if ( x.status != 200 ) {
+            if ( x.qrcode_data == '' ) {
                 alert('获取二维码失败!');
                 return false;
             }
