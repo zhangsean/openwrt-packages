@@ -65,7 +65,7 @@ notify() {
     if [ $? -eq 0 ]; then
         desc="Cookie 已失效"
     else
-        desc=$(cat ${LOG_FILE} | grep -E '签到前|签到后|账号' | sed 's/$/&\n/g')
+        desc=$(cat ${LOG_FILE} | grep -E '账号|签到前|签到后|距离' | sed 's/$/&\n/g')
     fi
     #serverchan
     sckey=$(uci_get_by_type global serverchan)
@@ -109,28 +109,33 @@ run() {
     SIGN_TEXT=$(uci_get_by_type global sign_text)
     echo "SIGN_TEXT: $SIGN_TEXT" >>$LOG_FILE
     USER_AGENT='Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36'
+    TMP_HOME=/tmp/zdm-home.htm
     curl -i "$ZDM_HOME" \
         -H "Referer: $ZDM_CREATE" \
         -H "User-Agent: $USER_AGENT" \
         -H "Cookie: $COOKIE" \
-        --insecure | grep -oE '共有(\d+)牛币' >>$LOG_FILE
+        --insecure > $TMP_HOME
+    grep -oE '共有(\d+)牛币' $TMP_HOME >>$LOG_FILE
     if [ $? -gt 0 ]; then
         echo "Cookie失效" >>$LOG_FILE
     else
         sed -i '/共有/s/^/签到前：/' $LOG_FILE
-        curl -i "$ZDM_CREATE" \
-            -H "Referer: $ZDM_HOME" \
-            -H "User-Agent: $USER_AGENT" \
-            -H "Cookie: $COOKIE" \
-            -F "rdm=AqGtwSuMcQ" \
-            -F "content=$SIGN_TEXT" \
-            -F file=@/dev/null \
-            --insecure | grep 'HTTP' >>$LOG_FILE
-        curl -i "$ZDM_HOME" \
-            -H "Referer: $ZDM_CREATE" \
-            -H "User-Agent: $USER_AGENT" \
-            -H "Cookie: $COOKIE" \
-            --insecure | grep -oE '共有(\d+)牛币|/user/(\d+).htm\">(\w+)' | head -n2 | sed '1s/^/签到后：/;s/.*>/账号：/' >>$LOG_FILE
+        sed -nr 's/.*(距离(.*)牛币还剩(.{8}))\".*/\1/p' $TMP_HOME >>$LOG_FILE
+        if ! grep '还剩' $LOG_FILE; then
+            curl -i "$ZDM_CREATE" \
+                -H "Referer: $ZDM_HOME" \
+                -H "User-Agent: $USER_AGENT" \
+                -H "Cookie: $COOKIE" \
+                -F "rdm=AqGtwSuMcQ" \
+                -F "content=$SIGN_TEXT" \
+                -F file=@/dev/null \
+                --insecure | grep 'HTTP' >>$LOG_FILE
+            curl -i "$ZDM_HOME" \
+                -H "Referer: $ZDM_CREATE" \
+                -H "User-Agent: $USER_AGENT" \
+                -H "Cookie: $COOKIE" \
+                --insecure | grep -oE '共有(\d+)牛币|/user/(\d+).htm\">(\w+)' | head -n2 | sed '1s/^/签到后：/;s/.*>/账号：/' >>$LOG_FILE
+        fi
     fi
     notify &
 }
