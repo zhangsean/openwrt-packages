@@ -129,6 +129,7 @@ run() {
         sed -i '/共有/s/^/签到前：/' $LOG_FILE
         sed -nr 's/.*(距离.*牛币还剩\d+.{6})\".*/\1/p' $TMP_HOME >>$LOG_FILE
         if ! grep '还剩' $LOG_FILE; then
+            sleep 10s
             curl -i "$ZDM_CREATE" \
                 -H "Referer: $ZDM_HOME" \
                 -H "User-Agent: $USER_AGENT" \
