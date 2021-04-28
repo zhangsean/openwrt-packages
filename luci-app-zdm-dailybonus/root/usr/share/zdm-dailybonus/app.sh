@@ -63,11 +63,15 @@ add_cron() {
 
 notify() {
     title="$(date '+%Y-%m-%d %H:%M:%S') 最代码签到"
-    grep "Cookie失效" ${LOG_FILE} >/dev/null
+    grep "Cookie失效" $LOG_FILE >/dev/null
     if [ $? -eq 0 ]; then
         desc="Cookie 已失效"
     else
-        desc=$(cat ${LOG_FILE} | grep -E '账号|签到前|签到后|距离' | sed 's/$/&\n/g')
+        desc=$(cat $LOG_FILE | grep -E '账号|签到前|签到后|距离' | sed 's/$/&\n/g')
+    fi
+    # 如果只推送成功和Cookie超时，则过滤距离xx还剩xx
+    if [ $(uci_get_by_type global notify_success 0) -eq 1 ] && grep '还剩' $LOG_FILE; then
+        return
     fi
     #serverchan
     sckey=$(uci_get_by_type global serverchan)

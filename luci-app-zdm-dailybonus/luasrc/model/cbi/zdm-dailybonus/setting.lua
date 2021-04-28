@@ -56,19 +56,23 @@ o = s:option(Value, 'tg_userid', translate('Telegram UserID'))
 o.rmempty = true
 o.description = translate('在Telegram上搜索getuserIDbot机器人，获取UserID。')
 
+o = s:option(Flag, 'notify_success', translate('只推送签到成功和Cookie超时'))
+o.rmempty = false
+o.description = translate('默认每次刷新签到都推送消息')
+
 --Auto Run Script Service
 
-o = s:option(Flag, 'auto_run', translate('自动签到'))
+o = s:option(Flag, 'auto_run', translate('自动刷新签到'))
 o.rmempty = false
 
-o = s:option(ListValue, 'auto_run_interval', translate('自动签到间隔(分钟)'))
+o = s:option(ListValue, 'auto_run_interval', translate('自动刷新签到间隔(分钟)'))
 for t = 1, 60 do
     o:value(t, t)
 end
 o.default = 12
 o.rmempty = true
 o:depends('auto_run', '1')
-o.description = translate('每隔n分钟去刷新以避免cookie超时')
+o.description = translate('每隔n分钟去刷新以避免Cookie超时')
 
 o = s:option(DummyValue, '', '')
 o.rawhtml = true
