@@ -53,12 +53,7 @@ cancel() {
 add_cron() {
     sed -i '/zdm-dailybonus/d' $CRON_FILE
     if [ $(uci_get_by_type global auto_run 0) -eq 1 ]; then
-        interval=$(uci_get_by_type global auto_run_interval)
-        if [ $interval -eq 24 ]; then
-            echo $(uci_get_by_type global auto_run_time_m)' '$(uci_get_by_type global auto_run_time_h)' * * * sh /usr/share/zdm-dailybonus/app.sh -w' >>$CRON_FILE
-        else
-            echo $(uci_get_by_type global auto_run_time_m)' */'$interval' * * * sh /usr/share/zdm-dailybonus/app.sh -w' >>$CRON_FILE
-        fi
+        echo '*/'$(uci_get_by_type global auto_run_interval)' * * * * sh /usr/share/zdm-dailybonus/app.sh -w' >>$CRON_FILE
     fi
     crontab $CRON_FILE
     /etc/init.d/cron restart

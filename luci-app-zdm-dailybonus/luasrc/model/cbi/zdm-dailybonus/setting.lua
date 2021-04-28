@@ -61,29 +61,14 @@ o.description = translate('在Telegram上搜索getuserIDbot机器人，获取Use
 o = s:option(Flag, 'auto_run', translate('自动签到'))
 o.rmempty = false
 
-o = s:option(ListValue, 'auto_run_time_h', translate('自动签到时间(小时)'))
-for t = 0, 23 do
-    o:value(t, t)
-end
-o.default = 1
-o.rmempty = true
-o:depends('auto_run', '1')
-
-o = s:option(ListValue, 'auto_run_time_m', translate('自动签到时间(分钟)'))
-for t = 0, 59 do
-    o:value(t, t)
-end
-o.default = 1
-o.rmempty = true
-o:depends('auto_run', '1')
-
-o = s:option(ListValue, 'auto_run_interval', translate('自动签到间隔(小时)'))
-for t = 1, 24 do
+o = s:option(ListValue, 'auto_run_interval', translate('自动签到间隔(分钟)'))
+for t = 1, 60 do
     o:value(t, t)
 end
 o.default = 12
 o.rmempty = true
 o:depends('auto_run', '1')
+o.description = translate('每隔n分钟去刷新以避免cookie超时')
 
 o = s:option(DummyValue, '', '')
 o.rawhtml = true
