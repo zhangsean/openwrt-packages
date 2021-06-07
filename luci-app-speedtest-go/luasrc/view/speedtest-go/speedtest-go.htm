@@ -1,0 +1,9 @@
+<%+header%>
+<div class="cbi-map">
+        <h2 name="content"><%=translate("speedtest-go")%></h2>
+        <iframe id="speedtest-go" style="width: 100%; min-height: 1200px; border: none; border-radius: 3px;"></iframe>
+</div>
+<script type="text/javascript">
+        document.getElementById("speedtest-go").src = "http://" + window.location.hostname + ":666";
+</script>
+<%+footer%>

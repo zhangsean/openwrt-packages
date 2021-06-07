@@ -1,0 +1,1 @@
+# speedtest-go for OpenWrt
