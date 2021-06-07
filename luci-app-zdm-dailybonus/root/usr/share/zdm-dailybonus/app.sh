@@ -12,6 +12,7 @@
 NAME=zdm-dailybonus
 LOG_FILE=/var/log/zdm-dailybonus.log
 CRON_FILE=/etc/crontabs/root
+TMP_COOKIE=/tmp/zdm-dailybonus-cookie
 ZDM_CREATE=http://www.zuidaima.com/mood/create.htm
 ZDM_HOME=http://www.zuidaima.com/
 
@@ -66,8 +67,15 @@ notify() {
     grep "Cookie失效" $LOG_FILE >/dev/null
     if [ $? -eq 0 ]; then
         desc="Cookie 已失效"
+        # 不要重复通知Cookie失效
+        if [ -f $TMP_COOKIE ]; then
+            return
+        else
+            touch $TMP_COOKIE
+        fi
     else
         desc=$(cat $LOG_FILE | grep -E '账号|签到前|签到后|距离' | sed 's/$/&\n/g')
+        rm -f $TMP_COOKIE
     fi
     # 如果只推送成功和Cookie超时，则过滤距离xx还剩xx
     if [ $(uci_get_by_type global notify_success 0) -eq 1 ] && grep '还剩' $LOG_FILE; then
