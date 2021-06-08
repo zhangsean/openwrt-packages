@@ -8,8 +8,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=netdata
-PKG_VERSION:=1.30.1
-PKG_RELEASE:=1
+PKG_VERSION:=1.23.2
+PKG_RELEASE:=2
 
 PKG_MAINTAINER:=Josef Schlehofer <pepe.schlehofer@gmail.com>, Daniel Engberg <daniel.engberg.lists@pyret.net>, Sean Zhang <zxf2342@gmail.com>
 PKG_LICENSE:=GPL-3.0-or-later
