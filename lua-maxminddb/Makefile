@@ -31,7 +31,7 @@ define Package/lua-maxminddb
   CATEGORY:=Languages
   TITLE:=Lua-Maxminddb
   URL:=https://github.com/jerrykuku/lua-maxminddb
-  DEPENDS:=+lua +libmaxminddb
+  DEPENDS:=+lua +libmaxminddb +ninja
 endef
 
 define Package/lua-maxminddb/description
