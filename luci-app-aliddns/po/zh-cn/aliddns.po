@@ -4,14 +4,14 @@ msgstr "Content-Type: text/plain; charset=UTF-8\n"
 msgid "AliDDNS"
 msgstr "阿里DDNS"
 
-msgid "enable"
+msgid "Enable"
 msgstr "启用"
 
 msgid "Clean Before Update"
 msgstr "清除所有同名记录"
 
-msgid "Base"
-msgstr "基本设置"
+msgid "Setting"
+msgstr "设置"
 
 msgid "WAN-IP Source"
 msgstr "WAN-IP来源"
@@ -40,5 +40,5 @@ msgstr "检查时间"
 msgid "Unit: Minute, Range: 1-59"
 msgstr "域名检查间隔时间，单位分钟，范围1-59"
 
-msgid "Update Log"
-msgstr "更新记录"
+msgid "Log"
+msgstr "日志"

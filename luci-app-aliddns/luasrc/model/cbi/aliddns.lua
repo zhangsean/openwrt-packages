@@ -6,10 +6,10 @@ local t,e,o
 
 t=Map("aliddns",translate("AliDDNS"))
 
-e=t:section(TypedSection,"base",translate("Base"))
+e=t:section(TypedSection,"base",translate("Setting"))
 e.anonymous=true
 
-enable=e:option(Flag,"enable",translate("enable"))
+enable=e:option(Flag,"enable",translate("Enable"))
 enable.rmempty=false
 
 enable=e:option(Flag,"clean",translate("Clean Before Update"))
@@ -31,7 +31,7 @@ sub.rmempty=false
 time=e:option(Value,"time",translate("Inspection Time"),translate("Unit: Minute, Range: 1-59"))
 time.rmempty=false
 
-e=t:section(TypedSection,"base",translate("Update Log"))
+e=t:section(TypedSection,"base",translate("Log"))
 e.anonymous=true
 local a="/var/log/aliddns.log"
 tvlog=e:option(TextValue,"sylogtext")
