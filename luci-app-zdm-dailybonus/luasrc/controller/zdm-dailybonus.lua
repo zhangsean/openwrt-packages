@@ -6,9 +6,9 @@ function index()
         return
     end
 
-    entry({'admin', 'services', 'zdm-dailybonus'}, alias('admin', 'services', 'zdm-dailybonus', 'setting'), _('最代码签到'), 11).dependent = true -- 首页
-    entry({'admin', 'services', 'zdm-dailybonus', 'setting'}, cbi('zdm-dailybonus/setting', {hidesavebtn = true, hideresetbtn = true}), _('设置'), 10).leaf = true -- 基本设置
-    entry({'admin', 'services', 'zdm-dailybonus', 'log'}, form('zdm-dailybonus/log'), _('日志'), 30).leaf = true -- 日志页面
+    entry({'admin', 'services', 'zdm-dailybonus'}, alias('admin', 'services', 'zdm-dailybonus', 'setting'), _('ZDM Daily Bonus'), 11).dependent = true -- 首页
+    entry({'admin', 'services', 'zdm-dailybonus', 'setting'}, cbi('zdm-dailybonus/setting', {hidesavebtn = true, hideresetbtn = true}), _('Setting'), 10).leaf = true -- 基本设置
+    entry({'admin', 'services', 'zdm-dailybonus', 'log'}, form('zdm-dailybonus/log'), _('Log'), 30).leaf = true -- 日志页面
     entry({'admin', 'services', 'zdm-dailybonus', 'run'}, call('run')) -- 执行程序
     entry({'admin', 'services', 'zdm-dailybonus', 'qrcode'}, call('qrcode')) -- 获取二维码
     entry({'admin', 'services', 'zdm-dailybonus', 'check_login'}, call('check_login')) -- 检测登录

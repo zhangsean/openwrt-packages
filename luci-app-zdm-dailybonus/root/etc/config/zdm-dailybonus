@@ -1,7 +1,7 @@
 config global
 	option version '1.96'
-	option out '0'
-	option stop '100'
+	option delay '100'
+	option timeout '0'
 	option dd_token '1fdee6b09c9e037bb6bba8f7d70cfb4c7def1a3495685da6151a1cc3182c9de2'
 	option sign_text '今天心情不错'
 	option serverchan ''

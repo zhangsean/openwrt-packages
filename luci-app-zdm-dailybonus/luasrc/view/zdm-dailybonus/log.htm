@@ -4,7 +4,7 @@
 <script type="text/javascript">
     const LOG_URL = '<%=luci.dispatcher.build_url("admin", "services", "zdm-dailybonus","realtime_log")%>';
 
-    //获取实时日志
+    //Get realtime log
     XHR.poll(1, LOG_URL, null, (x, d) => {
         let logview = document.getElementById("logview");
         if (!d.running) {

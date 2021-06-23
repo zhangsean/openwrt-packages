@@ -1,0 +1,98 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "ZDM Daily Bonus"
+msgstr "最代码签到"
+
+msgid "Setting"
+msgstr "设置"
+
+msgid "Log"
+msgstr "日志"
+
+msgid "Global Setting"
+msgstr "全局设置"
+
+msgid "Account cookies"
+msgstr "账号 Cookie 列表"
+
+msgid "Double click the input box, then scan the QR code, the input box will be autocomplete after login success"
+msgstr "双击输入框或点击添加图标即可调出二维码，扫码后自动填入"
+
+msgid "Sign-in mood"
+msgstr "签到心情"
+
+msgid "Mood text for each automatic sign in"
+msgstr "每次自动签到的心情文本"
+
+msgid "Sign-in delay"
+msgstr "签到延迟"
+
+msgid "Customize concurrent sign-in delay, in milliseconds"
+msgstr "自定义并发签到延迟，单位毫秒"
+
+msgid "API timeout"
+msgstr "接口超时"
+
+msgid "API timeout, to avoid interface blockage when the network is unstable, 0 is not limited, in milliseconds"
+msgstr "接口超时时间，网络不稳定避免接口堵塞，0不限制，单位毫秒"
+
+msgid "Dingtalk robot webhook"
+msgstr "钉钉机器人 Webhook"
+
+msgid "Add a dingtalk group custom robot and set the keyword as 签到 to get a webhook"
+msgstr "添加一个钉钉群自定义机器人，设置关键字为 “签到”，得到 Webhook"
+
+msgid "Server chan API URL"
+msgstr "Server酱的推送接口地址"
+
+msgid "Select the type of push interface for the server chan"
+msgstr "选择Server酱的推送接口类型"
+
+msgid "Select chan SCKEY"
+msgstr "Server酱 SCKEY"
+
+msgid "Sign in and bind to get a SCKEY on http://sc.ftqq.com/"
+msgstr "登录 http://sc.ftqq.com/ 绑定并获取 SCKEY"
+
+msgid "Telegram Bot Token"
+msgstr "Telegram 机器人令牌"
+
+msgid "Search the BotFather robot on Telegram, create a notification robot and get the token"
+msgstr "在Telegram上搜索BotFather机器人，创建一个通知机器人，获得令牌"
+
+msgid "Telegram UserID"
+msgstr "Telegram 用户ID"
+
+msgid "Search the getuserIDbot robot on Telegram to get your UserID"
+msgstr "在Telegram上搜索getuserIDbot机器人，获取UserID"
+
+msgid "Push notification only for sign-in success and cookie timeout"
+msgstr "只推送签到成功和Cookie超时"
+
+msgid "By default, the message will be pushed every time the sign in is refreshed"
+msgstr "默认每次刷新签到都推送消息"
+
+msgid "Enable automatic sign-in and post a mood"
+msgstr "启用自动签到发表心情"
+
+msgid "Auto refresh check in interval (minutes)"
+msgstr "自动刷新签到间隔(分钟)"
+
+msgid "Auto refresh in serval minutes to avoid cookie timeout"
+msgstr "在几分钟内自动刷新以避免Cookie超时"
+
+msgid "Action"
+msgstr "操作"
+
+msgid "Manual execute once"
+msgstr "手动签到"
+
+msgid "Please use wechat code scanning authentication with the ZDM account bound"
+msgstr "请使用绑定最代码账号的 “微信” 扫码认证"
+
+msgid "Refresh"
+msgstr "刷新"
+
+msgid "Failed to get QR code, please try again later"
+msgstr "获取二维码失败，请稍后重试"
