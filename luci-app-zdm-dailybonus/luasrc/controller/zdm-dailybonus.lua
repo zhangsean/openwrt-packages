@@ -1,4 +1,4 @@
--- Copyright (C) 2020 jerrykuku <jerrykuku@gmail.com>
+-- Copyright (C) 2021 zhangsean <zxf2342@gmail.com>
 -- Licensed to the public under the GNU General Public License v3.
 module('luci.controller.zdm-dailybonus', package.seeall)
 function index()
@@ -6,16 +6,16 @@ function index()
         return
     end
 
-    entry({'admin', 'services', 'zdm-dailybonus'}, alias('admin', 'services', 'zdm-dailybonus', 'setting'), _('ZDM Daily Bonus'), 11).dependent = true -- 首页
-    entry({'admin', 'services', 'zdm-dailybonus', 'setting'}, cbi('zdm-dailybonus/setting', {hidesavebtn = true, hideresetbtn = true}), _('Setting'), 10).leaf = true -- 基本设置
-    entry({'admin', 'services', 'zdm-dailybonus', 'log'}, form('zdm-dailybonus/log'), _('Log'), 30).leaf = true -- 日志页面
-    entry({'admin', 'services', 'zdm-dailybonus', 'run'}, call('run')) -- 执行程序
-    entry({'admin', 'services', 'zdm-dailybonus', 'qrcode'}, call('qrcode')) -- 获取二维码
-    entry({'admin', 'services', 'zdm-dailybonus', 'check_login'}, call('check_login')) -- 检测登录
-    entry({'admin', 'services', 'zdm-dailybonus', 'realtime_log'}, call('get_log')) -- 获取实时日志
+    entry({'admin', 'services', 'zdm-dailybonus'}, alias('admin', 'services', 'zdm-dailybonus', 'setting'), _('ZDM Daily Bonus'), 11).dependent = true -- Menu item
+    entry({'admin', 'services', 'zdm-dailybonus', 'setting'}, cbi('zdm-dailybonus/setting', {hidesavebtn = true, hideresetbtn = true}), _('Setting'), 10).leaf = true -- Setting page
+    entry({'admin', 'services', 'zdm-dailybonus', 'log'}, form('zdm-dailybonus/log'), _('Log'), 30).leaf = true -- Log page
+    entry({'admin', 'services', 'zdm-dailybonus', 'run'}, call('run')) -- Run action
+    entry({'admin', 'services', 'zdm-dailybonus', 'qrcode'}, call('qrcode')) -- get qrcode
+    entry({'admin', 'services', 'zdm-dailybonus', 'check_login'}, call('check_login')) -- check login
+    entry({'admin', 'services', 'zdm-dailybonus', 'realtime_log'}, call('get_log')) -- get realtime log
 end
 
--- 执行程序
+-- run
 function run()
     local running = luci.sys.call("busybox ps -w | grep zdm-dailybonus | grep -v grep >/dev/null") == 0
     if not running then
@@ -33,7 +33,7 @@ local zdm_login = 'http://www.zuidaima.com/user/weixin/login.htm'
 local zdm_bind = 'http://www.zuidaima.com/user/weixin/bind_query_ticket.htm'
 local zdm_home = 'http://www.zuidaima.com/'
 
---获取二维码
+-- qrcode
 function qrcode()
     luci.sys.exec("wget-ssl --header='"..Accept.."' --header='"..Accept_Language.."' --referer='"..zdm_home.."' --user-agent='"..User_Agent.."' --load-cookies="..tmp_cookie.." --save-cookies="..tmp_cookie.." --keep-session-cookies -q -O - '"..zdm_login.."' > "..tmp_login)
     local img_data = luci.sys.exec("echo -n $(cat "..tmp_login.." | grep -oE 'data:image(.*)\" width=' | sed -r 's/.{8}$//')")
@@ -46,7 +46,7 @@ function qrcode()
     luci.http.write_json(return_json)
 end
 
---检测登录
+-- check_login
 function check_login()
     local data = luci.http.formvalue()
     local response = luci.sys.exec("echo -n $(wget-ssl --header='"..Accept.."' --header='"..Accept_Language.."' --referer='"..zdm_login.."' --user-agent='"..User_Agent.."' --load-cookies="..tmp_cookie.." --save-cookies="..tmp_cookie.." --keep-session-cookies -q -O - '"..zdm_bind.."?ticket="..data.ticket.."&_="..os.time().."')")
@@ -64,7 +64,7 @@ function check_login()
     luci.http.write_json(return_json)
 end
 
---获取实时日志
+-- get_log
 function get_log()
     local fs = require "nixio.fs"
     local e = {}
